@@ -24,6 +24,7 @@ private:
 	int nowTurn; //현재 플레이어 턴
 	vector<Card> dummy; // 카드 더미 (52장)
 	int winner;
+	int callMoney;
 	
 public:
 	string vision[30]; // 프린트 배열
@@ -33,12 +34,12 @@ public:
 	Game() {
 		tableMoney = 0;
 		gameUser.push_back(User("GOOD"));
-		gameUser.push_back(User("EXCELEN"));
-		gameUser.push_back(User("EXCELEN"));
-		gameUser.push_back(User("EXCELEN"));
-		gameUser.push_back(User("EXCELEN"));
-		gameUser.push_back(User("EXCELEN"));
-		gameUser.push_back(User("EXCELEN"));
+		gameUser.push_back(User("CHOI"));
+		gameUser.push_back(User("YOON"));
+		gameUser.push_back(User("JACK"));
+		gameUser.push_back(User("KIM"));
+		gameUser.push_back(User("PARK"));
+		gameUser.push_back(User("LEE"));
 		gameUser[1].SetBeforeBetting("FOLD");
 		gameUser[2].SetBeforeBetting("FOLD");
 		
@@ -57,20 +58,20 @@ public:
 			vision[11] = {"                                                                     |   ③ $300  \n" };
 			vision[12] = {"    ○               ○               ○               ○            |   ④ $1000 \n" };
 			vision[13] = {"┌  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ┐         |   ⑤ $ALL-IN\n" };
-			vision[14] = {"│                                                          │\n" };
-			vision[15] = {"│    ┌─────┐┌─────┐┌─────┐┌─────┐┌─────┐                   │\n" };
-			vision[16] = {"│    │     ││     ││     ││     ││     │    TABLE MONEY    │\n" };
-			vision[17] = {"│    │     ││     ││     ││     ││     │                   │\n" };
-			vision[18] = {"│    │     ││     ││     ││     ││     │    $              │\n" };
-			vision[19] = {"│    └─────┘└─────┘└─────┘└─────┘└─────┘                   │\n" };
-			vision[20] = {"│                                                          │\n" };
-			vision[21] = {"│   ○               ○               ○               ○  │\n" };
-			vision[22] = {"└  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ┘\n" };
-			vision[23] = {"                                                                  \n" };
-			vision[24] = {"                                                                  \n" };
-			vision[25] = {"                                                                  \n" };
-			vision[26] = {"                                                                  \n" };
-			vision[27] = {"                                                                  \n" };
+			vision[14] = {"│                                                          │         |   \n" };
+			vision[15] = {"│    ┌─────┐┌─────┐┌─────┐┌─────┐┌─────┐                   │         |   CALL MONEY\n" };
+			vision[16] = {"│    │     ││     ││     ││     ││     │    TABLE MONEY    │         |   $\n" };
+			vision[17] = {"│    │     ││     ││     ││     ││     │                   │         |\n" };
+			vision[18] = {"│    │     ││     ││     ││     ││     │    $              │         |   BUTTON PLAYER(선플레이어)\n" };
+			vision[19] = {"│    └─────┘└─────┘└─────┘└─────┘└─────┘                   │         |   >>PLAYER\n" };
+			vision[20] = {"│                                                          │         |\n" };
+			vision[21] = {"│   ○               ○               ○               ○  │         |   WINNER\n" };
+			vision[22] = {"└  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ┘         |   >>PLAYER\n" };
+			vision[23] = {"                                                                     |\n" };
+			vision[24] = {"                                                                     |\n" };
+			vision[25] = {"                                                                     |\n" };
+			vision[26] = {"                                                                     |\n" };
+			vision[27] = {"                                                                     |\n" };
 			vision[28] = { "===================================================================================================\n" };
 			
 	}
@@ -123,7 +124,9 @@ public:
 
 	bool CheckActivePlayer();
 
-	bool Action(int num, User &user);
+	void ReturnUserAction();
+
+	//bool Action(int num, User &user);
 
 	void Betting();
 	int JudgeWinner();

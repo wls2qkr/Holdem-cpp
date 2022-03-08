@@ -289,61 +289,61 @@ bool Game::CheckActivePlayer() {
 	else false;
 }
 
-bool Game::Action(int num, User &user) {
-	switch (num) {
-
-		//FOLD
-	case 0:
-		actionType = 0;
-		user.SetAlive(false);
-		return true;
-		break;
-
-		//100
-	case 1:
-		if (actionType <= 1) {
-			actionType = 1;
-			tableMoney += 100;
-			user.AddUserMoney(-100);
-			return true;
-		}
-		else return false;
-		break;
-
-		//300
-	case 2:
-		if (actionType <= 2) {
-			actionType = 2;
-			tableMoney += 300;
-			user.AddUserMoney(-300);
-			return true;
-		}
-		else return false;
-		break;
-
-		//1000
-	case 3:
-		if (actionType <= 3) {
-			actionType = 3;
-			tableMoney += 1000;
-			user.AddUserMoney(-1000);
-			return true;
-		}
-		else return false;
-		break;
-		//ALL-IN
-	case 4:
-		if (actionType <= 4) {
-			actionType = 4;
-			tableMoney += user.GetUserMoney();
-			user.SetUserMoney(0);
-			return true;
-		}
-		else return false;
-		break;
-	}
-	return false;
-}
+//bool Game::Action(int num, User &user) {
+//	switch (num) {
+//
+//		//FOLD
+//	case 0:
+//		actionType = 0;
+//		user.SetAlive(false);
+//		return true;
+//		break;
+//
+//		//100
+//	case 1:
+//		if (actionType <= 1) {
+//			actionType = 1;
+//			tableMoney += 100;
+//			user.AddUserMoney(-100);
+//			return true;
+//		}
+//		else return false;
+//		break;
+//
+//		//300
+//	case 2:
+//		if (actionType <= 2) {
+//			actionType = 2;
+//			tableMoney += 300;
+//			user.AddUserMoney(-300);
+//			return true;
+//		}
+//		else return false;
+//		break;
+//
+//		//1000
+//	case 3:
+//		if (actionType <= 3) {
+//			actionType = 3;
+//			tableMoney += 1000;
+//			user.AddUserMoney(-1000);
+//			return true;
+//		}
+//		else return false;
+//		break;
+//		//ALL-IN
+//	case 4:
+//		if (actionType <= 4) {
+//			actionType = 4;
+//			tableMoney += user.GetUserMoney();
+//			user.SetUserMoney(0);
+//			return true;
+//		}
+//		else return false;
+//		break;
+//	}
+//	return false;
+//}
 
 
 void Game::Betting() {
