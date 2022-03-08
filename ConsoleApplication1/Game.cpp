@@ -312,10 +312,10 @@ bool Game::Action(int num, User &user) {
 
 		//300
 	case 2:
-		if (Game::actionType <= 2) {
-			Game::actionType = 2;
-			Game::tableMoney += 300;
-			this->userMoney -= 300;
+		if (actionType <= 2) {
+			actionType = 2;
+			tableMoney += 300;
+			user.AddUserMoney(-300);
 			return true;
 		}
 		else return false;
@@ -323,20 +323,20 @@ bool Game::Action(int num, User &user) {
 
 		//1000
 	case 3:
-		if (Game::actionType <= 3) {
-			Game::actionType = 3;
-			Game::tableMoney += 1000;
-			this->userMoney -= 1000;
+		if (actionType <= 3) {
+			actionType = 3;
+			tableMoney += 1000;
+			user.AddUserMoney(-1000);
 			return true;
 		}
 		else return false;
 		break;
 		//ALL-IN
 	case 4:
-		if (Game::actionType <= 4) {
-			Game::actionType = 4;
-			Game::tableMoney += this->userMoney;
-			this->userMoney = 0;
+		if (actionType <= 4) {
+			actionType = 4;
+			tableMoney += user.GetUserMoney();
+			user.SetUserMoney(0);
 			return true;
 		}
 		else return false;
