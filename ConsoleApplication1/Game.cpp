@@ -1,9 +1,11 @@
 #include<iostream>
 #include<cstdlib>
 #include<ctime>
-#include "Card.h"
 
+
+#include "Card.h"
 #include "Game.h"
+
 
 //유저정보
 void Game::AddGameUser(User u) {
@@ -61,7 +63,7 @@ void Game::AddTableMoney(int num) {
 //게임정보업데이트메소드
 //한글깨짐확인
 void Game::PrintGameStatus() {
-	for (int i = 1; i < 27; i++) {
+	for (int i = 0; i < 29; i++) {
 		cout << vision[i];
 	}
 }
@@ -124,6 +126,10 @@ void Game::UpdateInfoTableCardShape() {
 		idx += 9;
 	}
 }
+void Game::UpdateUserCard() {
+
+}
+
 void Game::UpdatePlayerStatus() {
 	int idx = 0;
 	int num = 0;
@@ -133,7 +139,7 @@ void Game::UpdatePlayerStatus() {
 	for (int i = 1; i <= num; i++) {
 		string str = "PLAYER";
 		str += to_string(i);
-		vision[7].replace(idx, 5, str);
+		vision[7].replace(idx, 7, str);
 
 		string name = gameUser[i-1].GetUserName();
 		vision[8].replace(idx, name.length(), name);
@@ -185,13 +191,24 @@ void Game::UpdatePlayerStatus() {
 }
 void Game::UpdateGameStatus() {
 
-	//남은 플레이어 수
-	string remainPlayer = to_string(GetActivePlayerNum());
-	vision[3].replace(20, remainPlayer.length(), remainPlayer);
+	//스텝
+	int nowStep = GetNowStep();
+	string str;
+	if (nowStep == 0) str = "프리플랍";
+	else if (nowStep == 1) str = "플랍";
+	else if (nowStep == 2) str = "턴";
+	else if (nowStep == 3) str = "리버";
+	else if (nowStep == 4) str = "엔드";
+	vision[2].replace(12, str.length(), str);
+
+	//턴
 	string nowTurn = to_string(GetNowTurn());
-	vision[2].replace(14, nowTurn.length(), nowTurn);
+	vision[3].replace(14, nowTurn.length(), nowTurn);
 	int step = GetNowStep();
 
+	//남은 플레이어 수
+	string remainPlayer = to_string(GetActivePlayerNum());
+	vision[4].replace(20, remainPlayer.length(), remainPlayer);
 }
 
 string Game::ReturnCardNum(cnum num) {
