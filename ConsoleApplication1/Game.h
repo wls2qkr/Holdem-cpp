@@ -14,22 +14,22 @@ using namespace std;
 class Game {
 private:
 	//유저정보
-	vector<User> gameUser;
-	int activePlayerNum;
-	int buttonPlayer;
+	vector<User> gameUser; //유저 리스트
+	int activePlayerNum; //활동플레이어(살아있는 플레이어)
+	int buttonPlayer; //선플레이어 정보
 
 	//게임정보
-	int remainTime;
-	int nowStep;
-	int nowTurn;
-	vector<Card> dummy;
+	int remainTime; //남은시간
+	int nowStep; //현재 단계(프리플랍->플랍->턴->리버->엔드)
+	int nowTurn; //현재 플레이어 턴
+	vector<Card> dummy; // 카드 더미 (52장)
 	int winner;
 	
 public:
-	string vision[30];
+	string vision[30]; // 프린트 배열
 	int actionType;
-	int tableMoney;
-	vector<Card> tableCard;
+	int tableMoney; //게임 테이블 머니
+	vector<Card> tableCard; // 테이블 카드 리스트
 	Game() {
 		tableMoney = 0;
 		gameUser.push_back(User("GOOD"));
@@ -123,7 +123,7 @@ public:
 
 	bool CheckActivePlayer();
 
-	bool Action(int num);
+	bool Action(int num, User &user);
 
 	void Betting();
 	int JudgeWinner();

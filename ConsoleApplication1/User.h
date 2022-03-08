@@ -9,22 +9,21 @@
 using namespace std;
 class Game;
 
-// A(65) K(75) Q(81) J(74) T(84)
 class User {
 private:
 	//유저정보
 	string name;
 	int userMoney;
-	//int tableNum;
-	bool isButtonPlayer;
-	bool alive;
-	string beforeBetting;
+
+	bool isButtonPlayer; //선플레이어인지 아닌지
+	bool alive; // 다이 or Alive
+	string beforeBetting; // 이전 배팅 상태
 
 	//카드정보
-	vector<Card> userCard;
-	cnum HighNum;
-	cshape HighShape;
-	cgrade HighGrade;
+	vector<Card> userCard; //유저 카드리스트
+	cnum HighNum; // 높은 숫자
+	cshape HighShape; // 높은 모양
+	cgrade HighGrade; // 높은 패조합
 
 public:
 	User(string name) {
@@ -34,6 +33,7 @@ public:
 		HighGrade = TOP;
 		HighShape = CLOVER;
 	}
+
 	//유저정보
 	bool SetUserName(string name);
 	string GetUserName();
@@ -44,8 +44,6 @@ public:
 
 	void SetBeforeBetting(string bet);
 	string GetBeforeBetting();
-	//void SetTableNum(int num);
-	//int GetTableNum(int num);
 
 	void SetButtonPlayer();
 	bool GetButtonPlayer();

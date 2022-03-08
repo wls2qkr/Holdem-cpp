@@ -2,10 +2,8 @@
 #include<cstdlib>
 #include<ctime>
 
-
 #include "Card.h"
 #include "Game.h"
-
 
 //유저정보
 void Game::AddGameUser(User u) {
@@ -59,9 +57,7 @@ void Game::AddTableMoney(int num) {
 	this->tableMoney += num;
 }
 
-
 //게임정보업데이트메소드
-//한글깨짐확인
 void Game::PrintGameStatus() {
 	for (int i = 0; i < 29; i++) {
 		cout << vision[i];
@@ -270,7 +266,6 @@ Card Game::GetDummy() {
 	this->dummy.erase(this->dummy.begin()+num);
 	return value;
 }
-
 void Game::AllocateHand() {
 	for (int i = 0; i < gameUser.size(); i++) {
 		gameUser[i].GetUserCard().push_back(GetDummy());
@@ -294,60 +289,61 @@ bool Game::CheckActivePlayer() {
 	else false;
 }
 
-//bool Game::Action(int num) {
-//	switch (num) {
-//
-//		//FOLD
-//	case 0:
-//		Game::actionType = 0;
-//		this->alive = false;
-//		break;
-//
-//		//100
-//	case 1:
-//		if (Game::actionType <= 1) {
-//			Game::actionType = 1;
-//			Game::tableMoney += 100;
-//			this->userMoney -= 100;
-//			return true;
-//		}
-//		else return false;
-//		break;
-//
-//		//300
-//	case 2:
-//		if (Game::actionType <= 2) {
-//			Game::actionType = 2;
-//			Game::tableMoney += 300;
-//			this->userMoney -= 300;
-//			return true;
-//		}
-//		else return false;
-//		break;
-//
-//		//1000
-//	case 3:
-//		if (Game::actionType <= 3) {
-//			Game::actionType = 3;
-//			Game::tableMoney += 1000;
-//			this->userMoney -= 1000;
-//			return true;
-//		}
-//		else return false;
-//		break;
-//		//ALL-IN
-//	case 4:
-//		if (Game::actionType <= 4) {
-//			Game::actionType = 4;
-//			Game::tableMoney += this->userMoney;
-//			this->userMoney = 0;
-//			return true;
-//		}
-//		else return false;
-//		break;
-//	}
-//	return false;
-//}
+bool Game::Action(int num, User &user) {
+	switch (num) {
+
+		//FOLD
+	case 0:
+		actionType = 0;
+		user.SetAlive(false);
+		return true;
+		break;
+
+		//100
+	case 1:
+		if (actionType <= 1) {
+			actionType = 1;
+			tableMoney += 100;
+			user.AddUserMoney(-100);
+			return true;
+		}
+		else return false;
+		break;
+
+		//300
+	case 2:
+		if (Game::actionType <= 2) {
+			Game::actionType = 2;
+			Game::tableMoney += 300;
+			this->userMoney -= 300;
+			return true;
+		}
+		else return false;
+		break;
+
+		//1000
+	case 3:
+		if (Game::actionType <= 3) {
+			Game::actionType = 3;
+			Game::tableMoney += 1000;
+			this->userMoney -= 1000;
+			return true;
+		}
+		else return false;
+		break;
+		//ALL-IN
+	case 4:
+		if (Game::actionType <= 4) {
+			Game::actionType = 4;
+			Game::tableMoney += this->userMoney;
+			this->userMoney = 0;
+			return true;
+		}
+		else return false;
+		break;
+	}
+	return false;
+}
 
 
 void Game::Betting() {
