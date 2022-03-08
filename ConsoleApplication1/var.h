@@ -1,0 +1,12 @@
+
+#pragma once
+enum cnum {
+	ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING
+};
+enum cshape {
+	CLOVER, HEART, DIA, SPADE
+};
+enum cgrade {
+	TOP, ONEPAIR, TWOPAIR, TRIPLE, STRAIGHT, FLUSH,
+	FULLHOUSE, FOURCARD, STF, ROYAL
+};
