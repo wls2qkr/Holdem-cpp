@@ -26,7 +26,7 @@ private:
 	int winner;
 	
 public:
-	string vision[100];
+	string vision[30];
 	int actionType;
 	int tableMoney;
 	vector<Card> tableCard;
@@ -83,6 +83,7 @@ public:
 
 
 	//게임정보
+
 	void SetRemainTime(int num);
 	int GetRemainTime();
 	void SetTableMoney(int num);
@@ -94,10 +95,10 @@ public:
 	int GetNowTurn();
 	vector<Card> GetTableCard();
 
-	void PrintGameStatus();
 
 	//게임정보변경메소드
-    //테이블 카드 정보 변경
+	void PrintGameStatus();
+
 	void Update();
 	void UpdateInfoTableMoney();
 	void UpdateInfoTableCardNum();

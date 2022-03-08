@@ -59,6 +59,13 @@ void Game::AddTableMoney(int num) {
 
 
 //게임정보업데이트메소드
+//한글깨짐확인
+void Game::PrintGameStatus() {
+	for (int i = 1; i < 27; i++) {
+		cout << vision[i];
+	}
+}
+
 void Game::Update() {
 	UpdatePlayerStatus();
 	UpdateGameStatus();

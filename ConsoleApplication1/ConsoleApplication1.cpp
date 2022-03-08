@@ -24,12 +24,6 @@ char Screen[HEIGHT][WIDTH]=
 
 void Draw(void);
 
-void Print(string s[]) {
-	for (int i = 0; i < 100; i++) {
-		cout << s[i];
-	}
-}
-
 int main()
 {
 	//Initial();
@@ -42,7 +36,7 @@ int main()
 	game.tableCard.push_back(Card(NINE, DIA));
 	game.tableCard.push_back(Card(KING, DIA));
 	game.Update();
-	Print(game.vision);
+	game.PrintGameStatus();
 	
 
 
