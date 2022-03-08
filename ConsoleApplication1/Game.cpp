@@ -49,7 +49,7 @@ int Game::GetButtonPlayer() {
 	return this->buttonPlayer;
 }
 
-//게임정보
+//게임정보/
 vector<Card> Game::GetTableCard() {
 	return this->tableCard;
 }
