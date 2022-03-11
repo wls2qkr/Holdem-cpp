@@ -15,6 +15,7 @@ int main()
 	system("mode con: cols=100 lines=35");
 
 	char mode;
+	int clientStatus = 0;
 
 	printf("모드를 선택하세요 1 - 클라이언트, 2 - 서버, q - 종료 : ");
 
@@ -22,6 +23,7 @@ int main()
 		cin >> mode;
 
 		if (mode == '1') {
+			//Clinet
 
 			WSADATA wsaData;
 			SOCKET hSocket;
@@ -47,6 +49,8 @@ int main()
 
 			while (1) {
 				memset(message, 0, BUFSIZE*sizeof(char));
+
+
 				message[0] = '1';
 				char str[11];
 				printf("이름을 입력하세요(5자) : ");
@@ -79,6 +83,7 @@ int main()
 			WSACleanup();
 		}
 		else if (mode == '2') {
+			//Server
 
 			WSADATA wsaData;
 			SOCKET hServSock;
@@ -91,6 +96,14 @@ int main()
 			SOCKADDR clientAddr;
 
 			int ret;
+
+			//#Server
+			int servStatus = 0;
+			int playerNum = 0;
+			vector<string> playerName;
+			//#Client
+			int clientNum = 0;
+
 
 			WSAStartup(MAKEWORD(2, 2), &wsaData);
 			
@@ -123,7 +136,40 @@ int main()
 			int strLen = 0;
 
 			while ((strLen = recv(hClientSock, message, BUFSIZE, 0)) != 0) {
-				send(hClientSock, message, strlen(message), 0);
+				//메세지 [플레이어번호][응답번호][....][....
+				string str(message, message + BUFSIZE);
+				
+				if (servStatus == 0) {
+					if (message[0] == '1') {
+						playerNum++;
+						playerName[playerNum - 1] = str.substr(2, 10);
+					}
+
+					string numMessage = "00";
+					numMessage +="현재 인원은 ";
+					numMessage += to_string(playerNum);
+					numMessage += "명 입니다. 2명 이상일시 시작가능합니다.\n";
+					send(hClientSock, numMessage.c_str(), strlen(message), 0);
+
+					string completeMessage = to_string(playerNum);
+					completeMessage += '0';
+					completeMessage += "등록되었습니다. 플레이어 ";
+					completeMessage += to_string(playerNum);
+					completeMessage += '\n';
+
+					send(hClientSock, message, strlen(message), 0);
+				}
+				else if (servStatus == 1) {
+					send(hClientSock, "게임을 시작합니다.", 19, 0);
+					Game game;
+					for (int i = 0; i < playerNum; i++) {
+						game.AddGameUser(User(playerName[i]));
+					}
+					game.InitialGame();
+
+
+
+				}
 				memset(message, 0, 1024);
 
 			}
