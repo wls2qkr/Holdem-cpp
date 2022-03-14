@@ -29,6 +29,8 @@ private:
 public:
 	string vision[30]; // 프린트 배열
 	int actionType;
+	int turnIdx;
+	int turnNum;
 	int tableMoney; //게임 테이블 머니
 	vector<Card> tableCard; // 테이블 카드 리스트
 	Game() {

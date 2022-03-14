@@ -125,8 +125,6 @@ void User::FindCardGrade(Game& game) {
 }
 
 
-//액션
-
 
 //조건
 bool User::IsRSTF(Game& game) {

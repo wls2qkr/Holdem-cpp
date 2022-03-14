@@ -18,6 +18,7 @@ private:
 	bool isButtonPlayer; //선플레이어인지 아닌지
 	bool alive; // 다이 or Alive
 	string beforeBetting; // 이전 배팅 상태
+	bool finishBetting;
 
 	//카드정보
 	vector<Card> userCard; //유저 카드리스트
@@ -28,6 +29,7 @@ private:
 public:
 	User(string name) {
 		this->name = name;
+		this->alive = true;
 		userMoney = 10000;
 		HighNum = TWO;
 		HighGrade = TOP;
@@ -62,8 +64,6 @@ public:
 	cgrade GetHighGrade();
 	void FindCardGrade(Game& game);
 
-	//액션
-	
 
 	//조건
 	bool IsRSTF(Game& game);

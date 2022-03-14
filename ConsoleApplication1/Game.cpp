@@ -405,8 +405,8 @@ void Game::EndGame() {
 	gameUser[winner].AddUserMoney(tableMoney);
 	tableMoney = 0;
 	//선플레이어 선정
-	Game::SetButtonPlayer(winner);
+	SetButtonPlayer(winner);
 	//턴 초기화
-	Game::SetNowStep(0);
-	Game::SetNowTurn(0);
+	SetNowStep(0);
+	SetNowTurn(0);
 }
