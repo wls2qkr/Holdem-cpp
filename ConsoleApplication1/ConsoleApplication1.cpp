@@ -1,4 +1,5 @@
 ﻿#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#pragma comment(lib, "ws2_32.lib")
 #include <iostream>
 #include <cstdio>
 #include <WinSock2.h>
@@ -18,9 +19,9 @@ int main()
 
 	char mode;
 
-	printf("모드를 선택하세요 1 - 클라이언트, 2 - 서버, q - 종료 : ");
 
 	while (1) {
+		printf("모드를 선택하세요 1 - 클라이언트, 2 - 서버, q - 종료 : ");
 		cin >> mode;
 
 		if (mode == '1') {
@@ -30,11 +31,11 @@ int main()
 			SOCKET hSocket;
 			SOCKADDR_IN servAddr;
 
-			char msg[BUFSIZE] = "";
+			char msg[4096] = "";
+
 			char message[BUFSIZE] = "";
+			
 			bool sign = false;
-			int clientNum = 0;
-			int clientStatus = 0;
 			bool isButton = false;
 
 			WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -54,55 +55,39 @@ int main()
 			printf("connet 성공\n");
 
 			while (1) {
-				memset(message, 0, BUFSIZE * sizeof(char));
+				memset(msg, 0, 4096 * sizeof(char));
 				string str(message, message + BUFSIZE);
-				str[0] = clientNum;
-				//char cstr[10] = "";
+
 				string cstr = "";
 
 				if (sign) {
+					str = "2";
 					cout << "명령을 입력하세요.\n";
 					cin >> cstr;
-					if (clientNum == 1 && cstr[0] == '9') str[1] = '9';
-					if (isButton && cstr[0] == '8') str[1] = '8';
+
 					
 				}
 				else {
-					//str[0] = '0';
-					//str[1] = '1';
-					str = "01";
+					str = "1";
 
 					cout << "이름 입력 : ";
 					cin >> cstr;
 
-					//str = str.append(cstr);
-					str = str + cstr;
 					sign = true;
 				}
+				str = str + cstr;
 				
-				str[str.size() - 1] = '\0';
+				send(hSocket, str.c_str(), strlen(str.c_str()), 0);
 
-				strcpy_s(msg, str.c_str());
-				int len = strlen(msg);
+				//recv(hSocket, message, sizeof(message), 0);
+				recv(hSocket, msg, 4096, 0);
+				/*for (int i = 0; i < 30; i++) {
+					recv(hSocket, message, sizeof(message) , 0);
+					cout << message;
+				}*/
 
-				send(hSocket, msg, len, 0);
-				
-
-				recv(hSocket, message, BUFSIZE, 0);
-
-				printf("--- 서버로 부터 전송된 메세지 --- \n%s \n", message);
-				clientNum = message[0] - '0';
-				clientStatus = message[1] - '0';
-
-				if(clientStatus == 1)
-
-
-				//cout << "--------" << endl;
-				//printf("이름을 입력하세요(5자) : ");
-				//fputs("클라이언트 (q to quit) : ", stdout);
-
-				//fgets(message, BUFSIZE, stdin);
-				//cin >> message;
+				printf("--- 서버로 부터 전송된 메세지 --- \n");
+					cout << msg << endl;
 
 				if (cstr[0] == 'q') {
 					break;
@@ -122,8 +107,8 @@ int main()
 			char message[BUFSIZE] = "";
 
 			int clientLen;
-			SOCKET hClientSock[2];
-			int idx = 0;
+			SOCKET hClientSock;
+			
 			SOCKADDR clientAddr;
 
 			int ret;
@@ -131,11 +116,13 @@ int main()
 			//#Server
 			int servStatus = 0;
 			int playerNum = 0;
-			vector<string> playerName;
+			string playerName;
 			//#Client
 			int clientNum = 0;
 			//#Game
 			bool isBetting = false;
+
+			bool good = false; // 클라이언트의 입력이 올바른지 판단
 
 
 			WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -162,154 +149,99 @@ int main()
 			printf("listen() 성공\n");
 
 			clientLen = sizeof(clientAddr);
-			hClientSock[idx++] = accept(hServSock, (SOCKADDR*)&clientAddr, &clientLen);
+			hClientSock = accept(hServSock, (SOCKADDR*)&clientAddr, &clientLen);
 
 			printf("accept() 클라이언트 접속 성공\n");
 
 			int strLen = 0;
 
-			while ((strLen = recv(hClientSock[0], message, BUFSIZE, 0)) != 0|| (strLen = recv(hClientSock[1], message, BUFSIZE, 0)) != 0) {
+			while (strLen = recv(hClientSock, message, BUFSIZE, 0) != 0) {
+				
 				//메세지 [플레이어번호][응답번호][....][....
 				printf("err\n");
 
 				string str(message, message + BUFSIZE);
-				
+				string sstr;
+
 				cout << str << endl;
 
 				//send(hClientSock, "잘못된 입력이거나 차례가 아닙니다.\n", 36, 0);
-				//게임대기상태
+				 
+				// 대기방 (유저등록)
 				if (servStatus == 0) {
-					if (message[1] == '1') {
-						playerNum++;
-						playerName[playerNum - 1] = str.substr(2, 10);
+					if (message[0] == '1') {
+						game.AddGameUser(User(str.substr(1, 10)));
+						game.AddGameUser(User("Serv"));
 
-						string completeMessage;
-						completeMessage += "등록되었습니다. 플레이어 ";
-						completeMessage += to_string(playerNum);
-						completeMessage += '\n';
-						if (playerNum == 1) completeMessage += "1번 플레이어 -> (9 : 방닫고 현재인원 고정)";
-						send(hClientSock[playerNum], completeMessage.c_str(), strlen(completeMessage.c_str()), 0);
-					}
-					else if (message[1] == '9') {
-						send(hClientSock[0], "방을 닫습니다(인원고정 게임시작 가능상태).", 43, 0);
-						send(hClientSock[1], "방을 닫습니다(인원고정 게임시작 가능상태).", 43, 0);
-						
-						for (int i = 0; i < playerNum; i++) {
-							game.AddGameUser(User(playerName[i]));
-						}
-						
+						send(hClientSock, game.vision2.c_str(), strlen(game.vision2.c_str()), 0);
+
+						game.Update();
+
+						game.InitialGame();
+						//send(hClientSock, game.vision2.c_str(), strlen(game.vision2.c_str()), 0);
+
+						//send(hClientSock, "유저가 등록되었습니다.", 23, 0);
 						servStatus = 1;
-
-						send(hClientSock[0], str.c_str(), strlen(str.c_str()), 0);
-						send(hClientSock[1], str.c_str(), strlen(str.c_str()), 0);
 					}
-
-					/*string numMessage = "00";
-					numMessage +="현재 인원은 ";
-					numMessage += to_string(playerNum);
-					numMessage += "명 입니다. 2명 이상일시 시작가능합니다.\n";
-					send(hClientSock, numMessage.c_str(), strlen(numMessage.c_str()), 0);*/
-
-					//send(hClientSock, message, strlen(message), 0);
+					//send(hClientSock, str.c_str(), strlen(str.c_str()), 0);	
 				}
-				//게임상태
+				// 게임상태
 				else if (servStatus == 1) {
-					int player = message[0] - '0';
 					int action = message[1] - '0';
-					bool bet = false;
 
-					if (isBetting) {
-						if (player == game.GetNowTurn()) {
-							if (action == 1) {
-								game.GetGameUser()[player].SetAlive(false);
-								bet = true;
-							}
-							else if(action == 2) {
-								game.GetGameUser()[player].AddUserMoney(-100);
-								game.AddTableMoney(100);
-								bet = true;
-							}
-							else if (action == 3) {
-								game.GetGameUser()[player].AddUserMoney(-300);
-								game.AddTableMoney(300);
-								bet = true;
-							}
-							else if (action == 4) {
-								game.GetGameUser()[player].AddUserMoney(-1000);
-								game.AddTableMoney(1000);
-								bet = true;
-							}
-							else {
-								game.vision->append("잘못된 입력입니다.\n");
-							}
-							if (bet) {
-								game.vision->append(to_string(player));
-								game.vision->append(" 플레이어 배팅완료 \n");
-								int num = (game.GetNowTurn() + 1) % game.turnIdx;
-								game.SetNowTurn(num);
-								if (game.GetButtonPlayer() != player)
-									game.vision->append(to_string(num) + " 플레이어 배팅차례 (1~4 입력)\n");
-							}
-						}
-						else {
-
-						}
+					// 플레이어 1 : 클라이언트, 플레이어 2 : 서버
+					if (game.Betting(1, action)) {
+						good = true;
 					}
-					
-						if (action == 8 && game.GetNowStep() == 0) {
-							game.InitialGame();
-							printf("게임초기화\n");
-							game.SetNowStep(1);
-							game.SetButtonPlayer(1);
-							game.turnNum = game.GetActivePlayerNum();
+					else {
+						game.vision->append("잘못된 입력입니다.\n");
+					}
+
+					if (good) {
+
+						// 서버 입력
+						while (1) {
+							cout << "배팅 차례 1 ~4 선택\n";
+							cin >> sstr;
+							if (sstr[0] - '0' >= 1 || sstr[0] - '0' < 5) break;
+							else cout << "잘못된 입력입니다.\n";
 						}
-						else if (game.GetNowStep() == 1) {
+
+				
+						if (game.GetNowStep() == 0) {
 							//프리플랍
 							game.AllocateHand();
-							game.Betting();
+							game.SetNowStep(1);
+						}
+						else if (game.GetNowStep() == 1) {
+							//플랍
+							game.AllocateFolpCard();
 							game.SetNowStep(2);
 						}
 						else if (game.GetNowStep() == 2) {
-							//플랍
-							game.AllocateFolpCard();
-							game.Betting();
+							//턴
+							game.AllocateTurnCard();
 							game.SetNowStep(3);
 						}
 						else if (game.GetNowStep() == 3) {
-							//턴
-							game.AllocateTurnCard();
-							game.Betting();
+							//리버
+							game.AllocateRiverCard();
 							game.SetNowStep(4);
 						}
 						else if (game.GetNowStep() == 4) {
-							//리버
-							game.AllocateRiverCard();
-							game.Betting();
-							game.SetNowStep(5);
-						}
-						else if (game.GetNowStep() == 5) {
 							//엔드
 							game.EndGame();
 						}
-
-					
-
-					game.Update();
-					for (int i = 0; i < playerNum; i++) {
-						send(hClientSock[i], game.vision->c_str(), strlen(game.vision->c_str()), 0);
+						game.Update();
 					}
-
+					// INFO + 응답 전송
+					send(hClientSock, (char*)&game.vision, sizeof(game.vision), 0);
 				}
-				memset(message, 0, 1024);
-
+				memset(message, 0, BUFSIZE * sizeof(char));
 			}
-
 			printf("서버가 종료되었습니다. \n");
-
-			closesocket(hClientSock[0]);
-			closesocket(hClientSock[1]);
+			closesocket(hClientSock);
 			WSACleanup();
-
 		}
 		else if (mode == 'q') {
 			return 0;
@@ -318,7 +250,6 @@ int main()
 			printf("다시 입력하세요.\n");
 		}
 	}
-
 	return 0;
 }
 

@@ -27,6 +27,7 @@ private:
 	int callMoney;
 	
 public:
+	string vision2 = "";
 	string vision[30]; // 프린트 배열
 	int actionType;
 	int turnIdx;
@@ -34,21 +35,11 @@ public:
 	int tableMoney; //게임 테이블 머니
 	vector<Card> tableCard; // 테이블 카드 리스트
 	Game() {
-		tableMoney = 0;
-		gameUser.push_back(User("GOOD"));
-		gameUser.push_back(User("CHOI"));
-		gameUser.push_back(User("YOON"));
-		gameUser.push_back(User("JACK"));
-		gameUser.push_back(User("KIM"));
-		gameUser.push_back(User("PARK"));
-		gameUser.push_back(User("LEE"));
-		gameUser[1].SetBeforeBetting("FOLD");
-		gameUser[2].SetBeforeBetting("FOLD");
-		
-		
-		vision[0] = { "프리플랍->플랍->턴->리버->END|                 MY CARD               | ┌┐┌┐┌──┐┌┐  ┌─┐  ┌──┐┌┐  ┌┐ \n" };
-		vision[1] = { "                             |             ┌─────┐┌─────┐            | │││││┌┐│││  │ └┐ │┌─┘│└──┘│ \n" };
-			vision[2] = {"현재 스텝 :                  |  TOP CARD   │     ││     │            | │└┘│││││││  │  │ │└─┐│┌┐┌┐│ \n" };
+		tableMoney = 100;
+		tableCard.push_back(Card(ACE, SPADE));
+		vision[0] =  "프리플랍->플랍->턴->리버->END|                 MY CARD               | ┌┐┌┐┌──┐┌┐  ┌─┐  ┌──┐┌┐  ┌┐ \n" ;
+		vision[1] =  "                             |             ┌─────┐┌─────┐            | │││││┌┐│││  │ └┐ │┌─┘│└──┘│ \n" ;
+			vision[2] = "현재 스텝 :                  |  TOP CARD   │     ││     │            | │└┘│││││││  │  │ │└─┐│┌┐┌┐│ \n" ;
 			vision[3] = {"플레이어 턴 :                |             │     ││     │            | │┌┐│││││││  │　│ │┌─┘││││││ \n" };
 			vision[4] = {"남은 플레이어 수 :           |             │     ││     │            | │││││└┘││└─┐│ ┌┘ │└─┐││││││ \n" };
 			vision[5] = {"                             |             └─────┘└─────┘            | └┘└┘└──┘└──┘└─┘  └──┘└┘└┘└┘ \n" };
@@ -75,7 +66,9 @@ public:
 			vision[26] = {"                                                                     |\n" };
 			vision[27] = {"                                                                     |\n" };
 			vision[28] = { "===================================================================================================\n" };
-			
+			for (int i = 0; i < 30; i++) {
+				vision2 += vision[i];
+			}
 	}
 
 	//유저정보
@@ -115,6 +108,9 @@ public:
 	string ReturnCardNum(cnum num);
 	string ReturnCardShape(cshape shape);
 	string ReturnCardGrade(cgrade grade);
+
+	//액션
+	bool Betting(int player, int num);
 
 	//진행메소드
 	void InitialGame();

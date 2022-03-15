@@ -67,9 +67,13 @@ void Game::PrintGameStatus() {
 void Game::Update() {
 	UpdatePlayerStatus();
 	UpdateGameStatus();
-	UpdateInfoTableMoney();
-	UpdateInfoTableCardNum();
-	UpdateInfoTableCardShape();
+	//UpdateInfoTableMoney();
+	//UpdateInfoTableCardNum();
+	//UpdateInfoTableCardShape();
+	vision2.clear();
+	for (int i = 0; i < 30; i++) {
+		vision2 += vision[i];
+	}
 }
 
 void Game::UpdateInfoTableMoney() {
@@ -241,6 +245,34 @@ string Game::ReturnCardGrade(cgrade grade) {
 	else return "ROYAL";
 }
 
+//액션
+bool Game::Betting(int player, int num) {
+	cout << "게임유저 사이즈 : " << gameUser.size() << " player :" << player << "--";
+	if (gameUser.size() <= player) {
+		if (num == 1) {
+			GetGameUser()[player - 1].SetAlive(false);
+			return true;
+		}
+		else if (num == 2) {
+			GetGameUser()[player - 1].AddUserMoney(-100);
+			AddTableMoney(100);
+			return true;
+		}
+		else if (num == 3) {
+			GetGameUser()[player - 1].AddUserMoney(-300);
+			AddTableMoney(300);
+			return true;
+		}
+		else if (num == 4) {
+			GetGameUser()[player - 1].AddUserMoney(-1000);
+			AddTableMoney(1000);
+			return true;
+		}
+		else return false;
+	}
+	else return false;
+}
+
 //진행메소드
 void Game::InitialGame() {
 	this->dummy.clear();
@@ -287,82 +319,6 @@ void Game::AllocateRiverCard() {
 bool Game::CheckActivePlayer() {
 	if (activePlayerNum == 1) return true;
 	else false;
-}
-
-//bool Game::Action(int num, User &user) {
-//	switch (num) {
-//
-//		//FOLD
-//	case 0:
-//		actionType = 0;
-//		user.SetAlive(false);
-//		return true;
-//		break;
-//
-//		//100
-//	case 1:
-//		if (actionType <= 1) {
-//			actionType = 1;
-//			tableMoney += 100;
-//			user.AddUserMoney(-100);
-//			return true;
-//		}
-//		else return false;
-//		break;
-//
-//		//300
-//	case 2:
-//		if (actionType <= 2) {
-//			actionType = 2;
-//			tableMoney += 300;
-//			user.AddUserMoney(-300);
-//			return true;
-//		}
-//		else return false;
-//		break;
-//
-//		//1000
-//	case 3:
-//		if (actionType <= 3) {
-//			actionType = 3;
-//			tableMoney += 1000;
-//			user.AddUserMoney(-1000);
-//			return true;
-//		}
-//		else return false;
-//		break;
-//		//ALL-IN
-//	case 4:
-//		if (actionType <= 4) {
-//			actionType = 4;
-//			tableMoney += user.GetUserMoney();
-//			user.SetUserMoney(0);
-//			return true;
-//		}
-//		else return false;
-//		break;
-//	}
-//	return false;
-//}
-
-
-void Game::Betting() {
-	int idx = GetButtonPlayer(); // 2번이 선이라면 2번 인덱스인 1을 저장
-	int num = activePlayerNum;
-	for (int i = 0; i < num; i++) {
-		idx = idx++ % num;
-		if (gameUser[idx].GetAlive()) {
-			while (1) {/*
-				if (gameUser[idx].Action(1)) {
-					break;
-				}*/
-				//유저에게 응답을 받는 메소드
-				/*else {
-					cout << "다시" << endl;
-				}*/
-			}
-		}
-	}
 }
 
 int Game::JudgeWinner() {
