@@ -67,13 +67,15 @@ void Game::PrintGameStatus() {
 void Game::Update() {
 	UpdatePlayerStatus();
 	UpdateGameStatus();
-	//UpdateInfoTableMoney();
-	//UpdateInfoTableCardNum();
-	//UpdateInfoTableCardShape();
+	UpdateInfoTableMoney();
+	UpdateInfoTableCardNum();
+	UpdateInfoTableCardShape();
+	UpdateInfoUserCade();
 	vision2.clear();
 	for (int i = 0; i < 30; i++) {
 		vision2 += vision[i];
 	}
+	cout << vision2;
 }
 
 void Game::UpdateInfoTableMoney() {
@@ -125,9 +127,56 @@ void Game::UpdateInfoTableCardShape() {
 			vision[18].replace(10 + idx, 2, "¢¼");
 		idx += 9;
 	}
-}
-void Game::UpdateUserCard() {
 
+
+}
+void Game::UpdateInfoUserCade() {
+	int idx = 0;
+	for (int i = 0; i < 2; i++) {
+		if (GetGameUser()[i].GetUserCard()[i].GetShape() == 0)
+			vision[4].replace(50 + idx, 2, "¢À");
+		else if (GetGameUser()[i].GetUserCard()[i].GetShape() == 1)
+			vision[4].replace(50 + idx, 2, "¢¾");
+		else if (GetGameUser()[i].GetUserCard()[i].GetShape() == 2)
+			vision[4].replace(50 + idx, 2, "¡ß");
+		else if (GetGameUser()[i].GetUserCard()[i].GetShape() == 3)
+			vision[4].replace(50 + idx, 2, "¢¼");
+		idx += 9;
+	}
+	cout << vision[4] << endl;
+
+	idx = 0;
+
+	for (int i = 0; i < 2; i++) {
+		if (GetGameUser()[i].GetUserCard()[i].GetNum() == 0)
+			vision[2].replace(50 + idx, 2, "£Á");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 1)
+			vision[2].replace(50 + idx, 2, "£²");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 2)
+			vision[2].replace(50 + idx, 2, "£³");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 3)
+			vision[2].replace(50 + idx, 2, "£´");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 4)
+			vision[2].replace(50 + idx, 2, "£µ");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 5)
+			vision[2].replace(50 + idx, 2, "£¶");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 6)
+			vision[2].replace(50 + idx, 2, "£·");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 7)
+			vision[2].replace(50 + idx, 2, "£¸");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 8)
+			vision[2].replace(50 + idx, 2, "£¹");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 9)
+			vision[2].replace(50 + idx, 2, "10");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 10)
+			vision[2].replace(50 + idx, 2, "£Ê");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 11)
+			vision[2].replace(50 + idx, 2, "£Ñ");
+		else if (GetGameUser()[i].GetUserCard()[i].GetNum() == 12)
+			vision[2].replace(50 + idx, 2, "£Ë");
+		idx += 9;
+	}
+	cout << vision[2] << endl;
 }
 
 void Game::UpdatePlayerStatus() {

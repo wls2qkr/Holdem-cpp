@@ -35,8 +35,7 @@ public:
 	int tableMoney; //게임 테이블 머니
 	vector<Card> tableCard; // 테이블 카드 리스트
 	Game() {
-		tableMoney = 100;
-		tableCard.push_back(Card(ACE, SPADE));
+		tableMoney = 0;
 		vision[0] =  "프리플랍->플랍->턴->리버->END|                 MY CARD               | ┌┐┌┐┌──┐┌┐  ┌─┐  ┌──┐┌┐  ┌┐ \n" ;
 		vision[1] =  "                             |             ┌─────┐┌─────┐            | │││││┌┐│││  │ └┐ │┌─┘│└──┘│ \n" ;
 			vision[2] = "현재 스텝 :                  |  TOP CARD   │     ││     │            | │└┘│││││││  │  │ │└─┐│┌┐┌┐│ \n" ;
@@ -104,6 +103,7 @@ public:
 	void UpdateUserCard();
 	void UpdatePlayerStatus();
 	void UpdateGameStatus();
+	void UpdateInfoUserCade();
 
 	string ReturnCardNum(cnum num);
 	string ReturnCardShape(cshape shape);

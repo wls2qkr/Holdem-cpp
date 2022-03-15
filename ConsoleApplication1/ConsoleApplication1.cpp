@@ -79,12 +79,8 @@ int main()
 				
 				send(hSocket, str.c_str(), strlen(str.c_str()), 0);
 
-				//recv(hSocket, message, sizeof(message), 0);
-				recv(hSocket, msg, 4096, 0);
-				/*for (int i = 0; i < 30; i++) {
-					recv(hSocket, message, sizeof(message) , 0);
-					cout << message;
-				}*/
+				recv(hSocket, msg, 5012, 0);
+				
 
 				printf("--- 서버로 부터 전송된 메세지 --- \n");
 					cout << msg << endl;
@@ -170,20 +166,25 @@ int main()
 				// 대기방 (유저등록)
 				if (servStatus == 0) {
 					if (message[0] == '1') {
-						game.AddGameUser(User(str.substr(1, 10)));
+						int size = strlen(str.substr(1, 10).c_str());
+						game.AddGameUser(User(str.substr(1, size)));
 						game.AddGameUser(User("Serv"));
 
-						send(hClientSock, game.vision2.c_str(), strlen(game.vision2.c_str()), 0);
-
-						game.Update();
-
-						game.InitialGame();
-						//send(hClientSock, game.vision2.c_str(), strlen(game.vision2.c_str()), 0);
-
 						//send(hClientSock, "유저가 등록되었습니다.", 23, 0);
+
 						servStatus = 1;
+						game.InitialGame();
+
+						game.AllocateHand();
+						game.SetNowStep(1);
+						game.Update();
+						game.vision2.append("유저가 등록되었습니다.\n");
+						game.vision2.append("게임을 시작합니다.\n");
+						game.vision2.append("프리플랍 스테이지 핸드카드 획득.\n");
+						game.vision2.append("클라이언트 배팅 턴\n");
+
+						send(hClientSock, game.vision2.c_str(), strlen(game.vision2.c_str()), 0);
 					}
-					//send(hClientSock, str.c_str(), strlen(str.c_str()), 0);	
 				}
 				// 게임상태
 				else if (servStatus == 1) {
@@ -208,12 +209,7 @@ int main()
 						}
 
 				
-						if (game.GetNowStep() == 0) {
-							//프리플랍
-							game.AllocateHand();
-							game.SetNowStep(1);
-						}
-						else if (game.GetNowStep() == 1) {
+						if (game.GetNowStep() == 1) {
 							//플랍
 							game.AllocateFolpCard();
 							game.SetNowStep(2);
@@ -232,6 +228,7 @@ int main()
 							//엔드
 							game.EndGame();
 						}
+						good = false;
 						game.Update();
 					}
 					// INFO + 응답 전송
