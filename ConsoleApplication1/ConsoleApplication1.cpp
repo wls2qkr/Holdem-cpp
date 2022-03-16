@@ -217,27 +217,31 @@ int main()
 						if (game.GetNowStep() == 1) {
 							//플랍
 							game.AllocateFolpCard();
+							game.vision[29] = "플랍 스테이지 시작.\n";
 							game.SetNowStep(2);
 						}
 						else if (game.GetNowStep() == 2) {
 							//턴
 							game.AllocateTurnCard();
+							game.vision[29] = "턴 스테이지 시작.\n";
 							game.SetNowStep(3);
 						}
 						else if (game.GetNowStep() == 3) {
 							//리버
 							game.AllocateRiverCard();
+							game.vision[29] = "리버 스테이지 시작.\n";
 							game.SetNowStep(4);
 						}
 						else if (game.GetNowStep() == 4) {
 							//엔드
+							game.vision[29] = "엔드 스테이지.";
 							game.EndGame();
 						}
-
-						good = false;
+						
 						game.Update();
+						good = false;
 					}
-					game.PrintGameStatus();
+					
 
 					// INFO + 응답 전송
 					if (err) send(hClientSock, "잘못된 입력입니다.\n", 20,0);

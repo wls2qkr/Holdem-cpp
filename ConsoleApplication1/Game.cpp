@@ -56,6 +56,7 @@ void Game::AddTableMoney(int num) {
 
 //게임정보업데이트메소드
 void Game::PrintGameStatus() {
+	UpdateInfoUserCard(1);
 	for (int i = 0; i < 29; i++) {
 		cout << vision[i];
 	}
@@ -68,6 +69,7 @@ void Game::Update() {
 	UpdateInfoTableMoney();
 	UpdateInfoTableCardNum();
 	UpdateInfoTableCardShape();
+	PrintGameStatus();
 	UpdateInfoUserCard(0);
 	for (int i = 0; i < 30; i++) {
 		vision2 += vision[i];
@@ -192,7 +194,6 @@ void Game::UpdatePlayerStatus() {
 
 		string money = "$";
 		money += to_string(gameUser[i - 1].GetUserMoney());
-		cout << "유저 머니 : " << money << endl;
 		vision[9].replace(idx, money.length(), money);
 		int size = 8;
 		fill(vision[9].begin() + idx + money.length(), vision[9].begin() + idx + size, ' ');
@@ -200,7 +201,6 @@ void Game::UpdatePlayerStatus() {
 
 		string status = gameUser[i - 1].GetBeforeBetting();
 		vision[10].replace(idx, status.length(), status);
-
 		
 		string grade = ReturnCardShape(gameUser[i - 1].GetHighShape());
 		grade += ReturnCardNum(gameUser[i - 1].GetHighNum());
@@ -301,24 +301,28 @@ bool Game::Betting(int player, int num) {
 		int money = GetGameUser()[player - 1].GetUserMoney();
 		if (num == 1) {
 			gameUser[player - 1].SetAlive(false);
+			if (player == 2) vision2.append("서버의 배팅 -> Fold");
 			return true;
 		}
 		else if (num == 2) {
 			money -= 100;
 			gameUser[player - 1].SetUserMoney(money);
 			AddTableMoney(100);
+			if (player == 2) vision2.append("서버의 배팅 -> $100");
 			return true;
 		}
 		else if (num == 3) {
 			money -= 300;
 			gameUser[player - 1].SetUserMoney(money);
 			AddTableMoney(300);
+			if (player == 2) vision2.append("서버의 배팅 -> $300");
 			return true;
 		}
 		else if (num == 4) {
 			money -= 1000;
 			gameUser[player - 1].SetUserMoney(money);
 			AddTableMoney(1000);
+			if (player == 2) vision2.append("서버의 배팅 -> $1000");
 			return true;
 		}
 		else return false;
@@ -452,7 +456,7 @@ void Game::FindCardGrade(int num) {
 			}
 		}
 	}
-	GetGameUser()[num].SetHighGrade(value);
+	gameUser[num].SetHighGrade(value);
 }
 
 void Game::EndGame() {
@@ -461,6 +465,9 @@ void Game::EndGame() {
 	FindCardGrade(1);
 
 	int winner = JudgeWinner();
+	if (winner == 0) vision[29].append("클라이언트의 승리");
+	else if(winner == 1) vision[29].append("서버의 승리");
+
 	gameUser[winner].AddUserMoney(tableMoney);
 	tableMoney = 0;
 	//선플레이어 선정
@@ -477,16 +484,16 @@ bool Game::IsRSTF(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
-	bool deck[4][13];
+	bool deck[4][13] = { false, };
 	for (int i = 0; i < 7; i++) {
 		deck[temp[i].GetShape()][temp[i].GetNum()] = true;
 	}
 	for (int i = 3; i > 0; i--) {
 		if (deck[i][0] && deck[i][12] && deck[i][11] && deck[i][10] && deck[i][9]) {
-			GetGameUser()[num].SetHighNum(ACE);
-			GetGameUser()[num].SetHighShape((cshape)i);
+			gameUser[num].SetHighNum(ACE);
+			gameUser[num].SetHighShape((cshape)i);
 			return true;
 		}
 	}
@@ -498,7 +505,7 @@ bool Game::IsSTF(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
 	vector<int> v[4];
 	for (int i = 0; i < 7; i++) {
@@ -509,8 +516,8 @@ bool Game::IsSTF(int num) {
 			sort(v[i].begin(), v[i].end());
 			for (int j = 0; j < v[i].size() - 4; j++) {
 				if (((((v[i].at(j)) == (v[i].at(j + 1) - 1) == (v[i].at(j + 2) - 2)) == (v[i].at(j + 3) - 3)) == v[i].at(j + 4) - 4)) {
-					GetGameUser()[num].SetHighNum((cnum)v[i].at(j + 4));
-					GetGameUser()[num].SetHighShape((cshape)i);
+					gameUser[num].SetHighNum((cnum)v[i].at(j + 4));
+					gameUser[num].SetHighShape((cshape)i);
 					return true;
 				}
 			}
@@ -524,7 +531,7 @@ bool Game::IsFourCard(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
 	vector<int> v[13];
 	for (int i = 0; i < 7; i++) {
@@ -532,9 +539,9 @@ bool Game::IsFourCard(int num) {
 	}
 	for (int i = 12; i > 0; i--) {
 		if (v[i].size() == 4) {
-			GetGameUser()[num].SetHighNum((cnum)i);
+			gameUser[num].SetHighNum((cnum)i);
 			sort(v[i].begin(), v[i].end());
-			GetGameUser()[num].SetHighShape((cshape)v[i].back());
+			gameUser[num].SetHighShape((cshape)v[i].back());
 			return true;
 		}
 	}
@@ -546,7 +553,7 @@ bool Game::IsFullHouse(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
 	vector<int> v[13];
 	for (int i = 0; i < 7; i++) {
@@ -559,8 +566,8 @@ bool Game::IsFullHouse(int num) {
 				if (i == j) continue;
 				if (v[j].size() == 2) {
 					sort(v[i].begin(), v[i].end());
-					GetGameUser()[num].SetHighNum((cnum)i);
-					GetGameUser()[num].SetHighShape((cshape)v[i].back());
+					gameUser[num].SetHighNum((cnum)i);
+					gameUser[num].SetHighShape((cshape)v[i].back());
 					return true;
 				}
 			}
@@ -575,7 +582,7 @@ bool Game::IsFlush(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
 
 	vector<int> v[4];
@@ -586,8 +593,8 @@ bool Game::IsFlush(int num) {
 	for (int i = 0; i < 4; i++) {
 		if (v[i].size() >= 5) {
 			sort(v[i].begin(), v[i].end());
-			GetGameUser()[num].SetHighNum((cnum)v[i].back());
-			GetGameUser()[num].SetHighShape((cshape)i);
+			gameUser[num].SetHighNum((cnum)v[i].back());
+			gameUser[num].SetHighShape((cshape)i);
 			return true;
 		}
 	}
@@ -599,7 +606,7 @@ bool Game::IsStraight(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
 	vector<int> v[13];
 	for (int i = 0; i < 7; i++) {
@@ -607,9 +614,9 @@ bool Game::IsStraight(int num) {
 	}
 	for (int i = 12; i > 4; i--) {
 		if (v[i].size() > 0 && v[i - 1].size() > 0 && v[i - 2].size() > 0 && v[i - 3].size() > 0 && v[i - 4].size() > 0) {
-			GetGameUser()[num].SetHighNum((cnum)i);
+			gameUser[num].SetHighNum((cnum)i);
 			sort(v[i].begin(), v[i].end());
-			GetGameUser()[num].SetHighShape((cshape)v[i].back());
+			gameUser[num].SetHighShape((cshape)v[i].back());
 			return true;
 		}
 	}
@@ -621,7 +628,7 @@ bool Game::IsTriple(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
 	vector<int> v[13];
 	for (int i = 0; i < 7; i++) {
@@ -629,8 +636,8 @@ bool Game::IsTriple(int num) {
 	}
 	for (int i = 12; i > 0; i--) {
 		if (v[i].size() == 3) {
-			GetGameUser()[num].SetHighNum((cnum)i);
-			GetGameUser()[num].SetHighShape((cshape)v[i][2]);
+			gameUser[num].SetHighNum((cnum)i);
+			gameUser[num].SetHighShape((cshape)v[i][2]);
 			return true;
 		}
 	}
@@ -642,7 +649,7 @@ bool Game::IsTwoPair(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
 	vector<int> v[13];
 	for (int i = 0; i < 7; i++) {
@@ -657,8 +664,8 @@ bool Game::IsTwoPair(int num) {
 			if (pair == 1) high = i;
 		}
 		if (pair == 2) {
-			GetGameUser()[num].SetHighNum((cnum)high);
-			GetGameUser()[num].SetHighShape((cshape)v[high][1]);
+			gameUser[num].SetHighNum((cnum)high);
+			gameUser[num].SetHighShape((cshape)v[high][1]);
 			return true;
 		}
 	}
@@ -670,7 +677,7 @@ bool Game::IsOnePair(int num) {
 		temp[i] = tableCard[i];
 	}
 	for (int i = 0; i < 2; i++) {
-		temp[i + 5] = GetGameUser()[num].userCard[i];
+		temp[i + 5] = gameUser[num].userCard[i];
 	}
 	vector<int> v[13];
 	for (int i = 0; i < 7; i++) {
@@ -678,8 +685,8 @@ bool Game::IsOnePair(int num) {
 	}
 	for (int i = 12; i > 0; i--) {
 		if (v[i].size() == 2) {
-			GetGameUser()[num].SetHighNum((cnum)i);
-			GetGameUser()[num].SetHighShape((cshape)v[i][1]);
+			gameUser[num].SetHighNum((cnum)i);
+			gameUser[num].SetHighShape((cshape)v[i][1]);
 			return true;
 		}
 	}
