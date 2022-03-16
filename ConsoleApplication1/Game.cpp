@@ -60,6 +60,10 @@ void Game::PrintGameStatus() {
 	for (int i = 0; i < 29; i++) {
 		cout << vision[i];
 	}
+	if (GetNowStep() == 2) cout << "플랍 스테이지 시작\n";
+	else if (GetNowStep() == 3) cout << "턴 스테이지 시작\n";
+	else if (GetNowStep() == 4) cout << "리버 스테이지 시작\n";
+	else if (GetNowStep() == 5) cout << "엔드 스테이지\n";
 }
 
 void Game::Update() {
@@ -70,6 +74,8 @@ void Game::Update() {
 	UpdateInfoTableCardNum();
 	UpdateInfoTableCardShape();
 	PrintGameStatus();
+	if (GetButtonPlayer() == 0) cout << "클라이언트의 승리\n";
+	else if (GetButtonPlayer() == 1) cout << "서버의 승리\n";
 	UpdateInfoUserCard(0);
 	for (int i = 0; i < 30; i++) {
 		vision2 += vision[i];

@@ -62,7 +62,7 @@ int main()
 
 				if (sign) {
 					str = "2";
-					cout << "명령을 입력하세요.\n";
+					cout << "1 ~ 4 배팅 번호를 입력하세요.\n";
 					cin >> cstr;
 
 					
@@ -159,7 +159,7 @@ int main()
 
 				bool err = false;
 
-				cout << str << endl;
+				//cout << str << endl;
 
 				//send(hClientSock, "잘못된 입력이거나 차례가 아닙니다.\n", 36, 0);
 				 
@@ -204,7 +204,7 @@ int main()
 
 						// 서버 입력
 						while (1) {
-							cout << "배팅 차례 1 ~4 선택\n";
+							cout << "서버의 배팅 차례 1 ~4 선택\n";
 							cin >> sstr;
 							if (sstr[0] - '0' >= 1 || sstr[0] - '0' < 5) {
 								game.Betting(2, sstr[0] - '0');								
@@ -218,12 +218,14 @@ int main()
 							//플랍
 							game.AllocateFolpCard();
 							game.vision[29] = "플랍 스테이지 시작.\n";
+							
 							game.SetNowStep(2);
 						}
 						else if (game.GetNowStep() == 2) {
 							//턴
 							game.AllocateTurnCard();
 							game.vision[29] = "턴 스테이지 시작.\n";
+							
 							game.SetNowStep(3);
 						}
 						else if (game.GetNowStep() == 3) {
