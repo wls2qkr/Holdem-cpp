@@ -21,12 +21,12 @@ private:
 	bool finishBetting;
 
 	//카드정보
-	vector<Card> userCard; //유저 카드리스트
 	cnum HighNum; // 높은 숫자
 	cshape HighShape; // 높은 모양
 	cgrade HighGrade; // 높은 패조합
 
 public:
+	vector<Card> userCard; //유저 카드리스트
 	User(string name) {
 		this->name = name;
 		this->alive = true;
@@ -62,18 +62,6 @@ public:
 	cshape GetHighShape();
 	void SetHighGrade(cgrade grade);
 	cgrade GetHighGrade();
-	void FindCardGrade(Game& game);
 
-
-	//조건
-	bool IsRSTF(Game& game);
-	bool IsSTF(Game& game);
-	bool IsFourCard(Game& game);
-	bool IsFullHouse(Game& game);
-	bool IsFlush(Game& game);
-	bool IsStraight(Game& game);
-	bool IsTriple(Game& game);
-	bool IsTwoPair(Game& game);
-	bool IsOnePair(Game& game);
 };
 #endif

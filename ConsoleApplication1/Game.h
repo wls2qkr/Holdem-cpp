@@ -39,7 +39,7 @@ public:
 		vision[0] =  "프리플랍->플랍->턴->리버->END|                 MY CARD               | ┌┐┌┐┌──┐┌┐  ┌─┐  ┌──┐┌┐  ┌┐ \n" ;
 		vision[1] =  "                             |             ┌─────┐┌─────┐            | │││││┌┐│││  │ └┐ │┌─┘│└──┘│ \n" ;
 			vision[2] = "현재 스텝 :                  |  TOP CARD   │     ││     │            | │└┘│││││││  │  │ │└─┐│┌┐┌┐│ \n" ;
-			vision[3] = {"플레이어 턴 :                |             │     ││     │            | │┌┐│││││││  │　│ │┌─┘││││││ \n" };
+			vision[3] = {"플레이어 턴                  |             │     ││     │            | │┌┐│││││││  │　│ │┌─┘││││││ \n" };
 			vision[4] = {"남은 플레이어 수 :           |             │     ││     │            | │││││└┘││└─┐│ ┌┘ │└─┐││││││ \n" };
 			vision[5] = {"                             |             └─────┘└─────┘            | └┘└┘└──┘└──┘└─┘  └──┘└┘└┘└┘ \n" };
 			vision[6] = {"=============================|=======================================|=============================\n" };
@@ -49,7 +49,7 @@ public:
 			vision[10] = {"                                                                     |   ② $100  \n" };
 			vision[11] = {"                                                                     |   ③ $300  \n" };
 			vision[12] = {"    ○               ○               ○               ○            |   ④ $1000 \n" };
-			vision[13] = {"┌  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ┐         |   ⑤ $ALL-IN\n" };
+			vision[13] = {"┌  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ──────────  ┘ └  ┐         |   ⑤        \n" };
 			vision[14] = {"│                                                          │         |   \n" };
 			vision[15] = {"│    ┌─────┐┌─────┐┌─────┐┌─────┐┌─────┐                   │         |   CALL MONEY\n" };
 			vision[16] = {"│    │     ││     ││     ││     ││     │    TABLE MONEY    │         |   $\n" };
@@ -90,7 +90,6 @@ public:
 	int GetNowStep();
 	void SetNowTurn(int num);
 	int GetNowTurn();
-	vector<Card> GetTableCard();
 
 
 	//게임정보변경메소드
@@ -103,7 +102,7 @@ public:
 	void UpdateUserCard();
 	void UpdatePlayerStatus();
 	void UpdateGameStatus();
-	void UpdateInfoUserCade();
+	void UpdateInfoUserCard(int num);
 
 	string ReturnCardNum(cnum num);
 	string ReturnCardShape(cshape shape);
@@ -121,13 +120,22 @@ public:
 	void AllocateRiverCard();
 
 	bool CheckActivePlayer();
-
-	void ReturnUserAction();
-
-	//bool Action(int num, User &user);
-
-	void Betting();
 	int JudgeWinner();
 	void EndGame();
+
+	void FindCardGrade(int num);
+
+	//조건
+	bool IsRSTF(int num);
+	bool IsSTF(int num);
+	bool IsFourCard(int num);
+	bool IsFullHouse(int num);
+	bool IsFlush(int num);
+	bool IsStraight(int num);
+	bool IsTriple(int num);
+	bool IsTwoPair(int num);
+	bool IsOnePair(int num);
+
+
 };
 #endif

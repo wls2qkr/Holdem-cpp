@@ -15,7 +15,7 @@ Game game;
 
 int main()
 {
-	system("mode con: cols=100 lines=35");
+	system("mode con: cols=100 lines=40");
 
 	char mode;
 
@@ -33,7 +33,7 @@ int main()
 
 			char msg[4096] = "";
 
-			char message[BUFSIZE] = "";
+			//char message[BUFSIZE] = "";
 			
 			bool sign = false;
 			bool isButton = false;
@@ -55,8 +55,8 @@ int main()
 			printf("connet 성공\n");
 
 			while (1) {
-				memset(msg, 0, 4096 * sizeof(char));
-				string str(message, message + BUFSIZE);
+				memset(msg, 0, 4096);
+				string str(msg, msg + BUFSIZE);
 
 				string cstr = "";
 
@@ -79,7 +79,7 @@ int main()
 				
 				send(hSocket, str.c_str(), strlen(str.c_str()), 0);
 
-				recv(hSocket, msg, 5012, 0);
+				recv(hSocket, msg, 4096, 0);
 				
 
 				printf("--- 서버로 부터 전송된 메세지 --- \n");
@@ -120,7 +120,6 @@ int main()
 
 			bool good = false; // 클라이언트의 입력이 올바른지 판단
 
-
 			WSAStartup(MAKEWORD(2, 2), &wsaData);
 			
 			hServSock = socket(PF_INET, SOCK_STREAM, 0);
@@ -153,11 +152,12 @@ int main()
 
 			while (strLen = recv(hClientSock, message, BUFSIZE, 0) != 0) {
 				
-				//메세지 [플레이어번호][응답번호][....][....
-				printf("err\n");
+				//메세지 [응답번호][....][....
 
 				string str(message, message + BUFSIZE);
 				string sstr;
+
+				bool err = false;
 
 				cout << str << endl;
 
@@ -184,6 +184,8 @@ int main()
 						game.vision2.append("클라이언트 배팅 턴\n");
 
 						send(hClientSock, game.vision2.c_str(), strlen(game.vision2.c_str()), 0);
+						game.UpdateInfoUserCard(1);
+						game.PrintGameStatus();
 					}
 				}
 				// 게임상태
@@ -195,7 +197,7 @@ int main()
 						good = true;
 					}
 					else {
-						game.vision->append("잘못된 입력입니다.\n");
+						err = true;
 					}
 
 					if (good) {
@@ -204,7 +206,10 @@ int main()
 						while (1) {
 							cout << "배팅 차례 1 ~4 선택\n";
 							cin >> sstr;
-							if (sstr[0] - '0' >= 1 || sstr[0] - '0' < 5) break;
+							if (sstr[0] - '0' >= 1 || sstr[0] - '0' < 5) {
+								game.Betting(2, sstr[0] - '0');								
+								break;
+							}
 							else cout << "잘못된 입력입니다.\n";
 						}
 
@@ -228,12 +233,17 @@ int main()
 							//엔드
 							game.EndGame();
 						}
+
 						good = false;
 						game.Update();
 					}
+					game.PrintGameStatus();
+
 					// INFO + 응답 전송
-					send(hClientSock, (char*)&game.vision, sizeof(game.vision), 0);
+					if (err) send(hClientSock, "잘못된 입력입니다.\n", 20,0);
+					else send(hClientSock, game.vision2.c_str(), strlen(game.vision2.c_str()), 0);
 				}
+				game.vision2.clear();
 				memset(message, 0, BUFSIZE * sizeof(char));
 			}
 			printf("서버가 종료되었습니다. \n");
