@@ -10,10 +10,14 @@ Game, User, Card 클래스 분할
 - User : 참가자(이름, 가진 카드 등)
 - Card : 숫자와 모양으로 이루어진 카드클래스
 
-<img src="https://th.bing.com/th/id/R.7a864f07681f187fb572468bfc949977?rik=EyUQGBjtSbMjVw&riu=http%3a%2f%2fpngimg.com%2fuploads%2fgithub%2fgithub_PNG80.png&ehk=sCQlSHnb7Wc8WNPgOilokXbf8jL4g20yv7QFEFpl6ko%3d&risl=&pid=ImgRaw&r=0" width="100">
+### 게임 진행
+플립플랍 -> 플랍 -> 턴 -> 리버 -> 엔드 의 단계로 구성
+플립플랍 : 2장의 핸드카드 + 배팅
+플랍 : 3장의 테이블카드 + 배팅
+턴 : 1장의 테이블카드 추가 + 배팅
+리버 : 1장의 마지막 테이블 카드 추가 + 배팅
+엔드 : 7장의 패조합으로 승패 판결
 
-
-|제목|내용|설명|
-|:-|:-:|-:|
-|111111111111111111|22222222|333333333333333333|
-|44444444|55555555555555555555555|666666|
+### 배팅
+FOLD 기능 x
+$100, $300, $1000 만 배팅가능
